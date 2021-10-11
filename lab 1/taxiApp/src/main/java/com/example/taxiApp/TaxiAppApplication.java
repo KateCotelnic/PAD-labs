@@ -16,6 +16,10 @@ public class TaxiAppApplication {
 		RouteLocator gateway (RouteLocatorBuilder rlb){
 			return rlb
 					.routes()
+					.route("error", rs -> rs
+							.path("/error")
+							.filters(fs -> fs.retry(6))
+							.uri("lb:/new"))
 					.route("newTrip", routeSpec -> routeSpec
 							.path("/new")
 							.filters(gatewayFilterSpec ->
