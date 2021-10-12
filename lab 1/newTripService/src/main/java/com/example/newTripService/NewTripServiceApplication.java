@@ -18,14 +18,14 @@ public class NewTripServiceApplication {
 		SpringApplication.run(NewTripServiceApplication.class, args);
 	}
 
-	private final Flux<User> users = Flux.fromStream(
-			Stream.generate(() -> {
-					return new User(1L, "location", "destination", TripType.DELIVERY, UserType.PASSENGER, 2L);
-			})
-	);
-
-	@Bean
-	Flux<User> users (){
-		return this.users.publish().autoConnect();
-	}
+//	private final Flux<User> users = Flux.fromStream(
+//			Stream.generate(() -> {
+//					return new User(1L, "location", "destination", TripType.DELIVERY, UserType.PASSENGER, 2L);
+//			})
+//	);
+//
+//	@Bean
+//	Flux<User> users (){
+//		return this.users.publish().autoConnect();
+//	}
 }

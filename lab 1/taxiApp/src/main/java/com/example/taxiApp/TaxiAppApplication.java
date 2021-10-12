@@ -29,13 +29,33 @@ public class TaxiAppApplication {
 					.route("trip", routeSpec -> routeSpec
 							.path("/trip")
 							.filters(gatewayFilterSpec ->
-									gatewayFilterSpec.setPath("/tripInfo"))
+									gatewayFilterSpec.setPath("/currentTrip"))
 							.uri("http://localhost:9292/"))
-					.route("payment", routeSpec -> routeSpec
-							.path("/pay")
-							.filters(gatewayFilterSpec ->
-									gatewayFilterSpec.setPath("/payment"))
-							.uri("http://localhost:9393/"))
+//					.route("myTrip", routeSpec -> routeSpec
+//							.path("/myTrip")
+//							.filters(gatewayFilterSpec ->
+//									gatewayFilterSpec.setPath("/myTrip"))
+//							.uri("http://localhost:9292/"))
+//					.route("finish", routeSpec -> routeSpec
+//							.path("/finish")
+//							.filters(gfs ->
+//									gfs.setPath("/finishTrip"))
+//							.uri("http://localhost:9292/"))
+//					.route("getPassenger", routeSpec -> routeSpec
+//							.path("/passenger")
+//							.filters(gfs ->
+//									gfs.setPath("/getPassenger"))
+//							.uri("http://localhost:9393/"))
+//					.route("getDriver", routeSpec -> routeSpec
+//							.path("/driver")
+//							.filters(gfs ->
+//									gfs.setPath("/getDriver"))
+//							.uri("http://localhost:9393/"))
+//					.route("insertToDB", routeSpec -> routeSpec
+//							.path("/insert")
+//							.filters(gfs ->
+//									gfs.setPath("/insert"))
+//							.uri("http://localhost:9393/"))
 					.build();
 		}
 	}

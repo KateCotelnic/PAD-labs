@@ -29,8 +29,12 @@ public class UserController {
             produces = MediaType.TEXT_EVENT_STREAM_VALUE,
             value = "/newTrip"
     )
-    void post(@ModelAttribute UserDTO userDTO){
+    String post(@ModelAttribute UserDTO userDTO){
         userService.addUser(userDTO);
+//        if(userDTO.getUserType()=="DRIVER"){
+//            return "id: " + userDTO.getId();
+//        }
+        return "ok";
     }
 //    @GetMapping(
 //            produces = MediaType.TEXT_EVENT_STREAM_VALUE,

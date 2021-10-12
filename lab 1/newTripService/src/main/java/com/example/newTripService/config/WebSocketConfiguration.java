@@ -21,15 +21,15 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class WebSocketConfiguration {
 
-    private final ObjectMapper objectMapper;
-
-    @SneakyThrows
-    private String from (User user){
-        return this.objectMapper.writeValueAsString(user);
-    }
+//    private final ObjectMapper objectMapper;
+//
+//    @SneakyThrows
+//    private String from (User user){
+//        return this.objectMapper.writeValueAsString(user);
+//    }
 
     @Bean
-    WebSocketHandler webSocketHandler(Flux<User> userFlux){
+    WebSocketHandler webSocketHandler(){
         return  webSocketSession -> {
 //                var map = userFlux
 //                        .map(user -> from(user))
