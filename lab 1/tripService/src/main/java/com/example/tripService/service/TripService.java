@@ -23,4 +23,8 @@ public class TripService {
                 .build();
         tripRepository.save(trip);
     }
+
+    public Trip getByUserId(Long id){
+        return tripRepository.getTripByUserId(id);
+    }
 }

@@ -31,11 +31,11 @@ public class TaxiAppApplication {
 							.filters(gatewayFilterSpec ->
 									gatewayFilterSpec.setPath("/currentTrip"))
 							.uri("http://localhost:9292/"))
-//					.route("myTrip", routeSpec -> routeSpec
-//							.path("/myTrip")
-//							.filters(gatewayFilterSpec ->
-//									gatewayFilterSpec.setPath("/myTrip"))
-//							.uri("http://localhost:9292/"))
+					.route("myTrip", routeSpec -> routeSpec
+							.path("/myTrip/{id}")
+							.filters(gatewayFilterSpec ->
+									gatewayFilterSpec.setPath("/myTrip/{id}"))
+							.uri("http://localhost:9292/"))
 //					.route("finish", routeSpec -> routeSpec
 //							.path("/finish")
 //							.filters(gfs ->

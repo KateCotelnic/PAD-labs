@@ -10,7 +10,7 @@ public class TripDTO {
     private String destination;
     private String tripType;
     private String time;
-    private Double cost;
+    private String cost;
 
     public String getUserId() {
         return userId;
@@ -60,11 +60,11 @@ public class TripDTO {
         this.time = time;
     }
 
-    public Double getCost(Double length) {
+    public String getCost(String length) {
         return cost;
     }
 
-    public void setCost(Double cost) {
+    public void setCost(String cost) {
         this.cost = cost;
     }
 }

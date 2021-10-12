@@ -4,6 +4,7 @@ import com.example.tripService.entity.enums.PaymentType;
 import com.example.tripService.entity.enums.TripType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.bouncycastle.asn1.cms.Time;
 
@@ -16,6 +17,7 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Getter
 public class Trip {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
