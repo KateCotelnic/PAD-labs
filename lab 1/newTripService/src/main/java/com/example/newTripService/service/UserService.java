@@ -6,7 +6,6 @@ import com.example.newTripService.entity.enums.TripType;
 import com.example.newTripService.entity.enums.UserType;
 import com.example.newTripService.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,18 +13,29 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository userRepository;
 
-    public void addUser(UserDTO userDTO){
-        User user = User.builder()
-                .id(Long.parseLong(userDTO.getId()))
-                .tripType(TripType.valueOf(userDTO.getTripType()))
-                .userType(UserType.valueOf(userDTO.getUserType()))
-                .location(userDTO.getLocation())
-                .destination(userDTO.getDestination())
-                .build();
+    public UserDTO addUser(UserDTO userDTO){
+        User user;
+        if(userDTO.getUserType()=="PASSENGER") {
+            user = User.builder()
+                    .id(Long.parseLong(userDTO.getId()))
+                    .tripType(TripType.valueOf(userDTO.getTripType()))
+                    .userType(UserType.valueOf(userDTO.getUserType()))
+                    .location(userDTO.getLocation())
+                    .destination(userDTO.getDestination())
+                    .build();
+        } else {
+            user = User.builder()
+                    .id(Long.parseLong(userDTO.getId()))
+                    .location(userDTO.getLocation())
+                    .build();
+        }
         userRepository.save(user);
+        userDTO.setDriverId("1");
+        return userDTO;
     }
 
-    public User getUser(){
-        return userRepository.getById(0L);
+
+    public User getAnyUser(){
+        return userRepository.getUserByUserType(UserType.PASSENGER);
     }
 }

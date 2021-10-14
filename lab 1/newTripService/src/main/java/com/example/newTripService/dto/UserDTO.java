@@ -9,6 +9,7 @@ public class UserDTO {
     private String destination;
     private String tripType;
     private String userType;
+    private String driverId;
 
     public String getId() {
         return id;
@@ -48,5 +49,9 @@ public class UserDTO {
 
     public void setUserType(String userType) {
         this.userType = userType;
+    }
+
+    public void setDriverId(String driverId) {
+        this.driverId = driverId;
     }
 }

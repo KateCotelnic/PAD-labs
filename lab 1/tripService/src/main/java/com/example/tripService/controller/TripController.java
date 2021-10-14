@@ -40,4 +40,5 @@ public class TripController {
         tripDTO.setUserId(trip.getUserId().toString());
         return tripDTO;
     }
+
 }
