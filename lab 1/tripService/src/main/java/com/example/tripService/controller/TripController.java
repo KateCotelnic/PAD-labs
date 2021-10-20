@@ -1,5 +1,6 @@
 package com.example.tripService.controller;
 
+import com.example.tripService.dto.PaymentDTO;
 import com.example.tripService.dto.TripDTO;
 import com.example.tripService.entity.Trip;
 import com.example.tripService.service.TripService;
@@ -19,11 +20,17 @@ public class TripController {
             produces = MediaType.TEXT_EVENT_STREAM_VALUE,
             value = "/currentTrip"
     )
-    String post(@ModelAttribute TripDTO tripDTO){
+    TripDTO post(@ModelAttribute TripDTO tripDTO){
         tripDTO.setTime(tripDTO.getLocation().length() + "");
         tripDTO.setCost(tripDTO.getDestination().length() + "");
         tripService.addTrip(tripDTO);
-        return "ok";
+        return tripDTO;
+    }
+
+    @PostMapping(value = "/payment")
+    Trip setPayment(@RequestBody PaymentDTO paymentDTO){
+        tripService.addPaymentType(paymentDTO);
+        return tripService.getByUserId(Long.parseLong(paymentDTO.getUserId()));
     }
 
     @GetMapping(

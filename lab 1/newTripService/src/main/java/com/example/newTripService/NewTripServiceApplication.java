@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @SpringBootApplication
+//@EnableResourceServer
 public class NewTripServiceApplication {
 
 	public static void main(String[] args) {

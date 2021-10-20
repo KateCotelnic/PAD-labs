@@ -60,7 +60,7 @@ public class TripDTO {
         this.time = time;
     }
 
-    public String getCost(String length) {
+    public String getCost() {
         return cost;
     }
 
