@@ -5,13 +5,17 @@ import com.example.newTripService.entity.enums.TripType;
 import com.example.newTripService.entity.enums.UserType;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @SpringBootApplication
+@EnableEurekaClient
 //@EnableResourceServer
 public class NewTripServiceApplication {
 
@@ -29,4 +33,9 @@ public class NewTripServiceApplication {
 //	Flux<User> users (){
 //		return this.users.publish().autoConnect();
 //	}
+//@Bean
+//@LoadBalanced
+//public WebClient.Builder loadBelencedWebClientBuilder() {
+//	return WebClient.builder();
+//}
 }

@@ -3,24 +3,28 @@ package com.example.taxiApp;
 import org.apache.http.impl.BHttpConnectionBase;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
 import org.springframework.cloud.gateway.filter.ratelimit.RedisRateLimiter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 @SpringBootApplication
 //@EnableOAuth2Sso
 //@EnableZuulProxy
+@EnableEurekaClient
 public class TaxiAppApplication {
 
     public static void main(String[] args) {
@@ -44,14 +48,14 @@ public class TaxiAppApplication {
                 .build();
     }
 
-    @Bean
-    MapReactiveUserDetailsService authentication(){
-        return new MapReactiveUserDetailsService(User.withDefaultPasswordEncoder()
-                .username("kate")
-                .password("kk")
-                .roles("USER")
-                .build());
-    }
+//    @Bean
+//    MapReactiveUserDetailsService authentication(){
+//        return new MapReactiveUserDetailsService(User.withDefaultPasswordEncoder()
+//                .username("kate")
+//                .password("kk")
+//                .roles("USER")
+//                .build());
+//    }
 
     @Bean
     RouteLocator gateway(RouteLocatorBuilder rlb) {
@@ -59,17 +63,16 @@ public class TaxiAppApplication {
                 .routes()
                 .route(rs -> rs.path("/default")
                         .filters(f -> f.filters((exchange, chain) -> chain.filter(exchange)))
-                        .uri("http://localhost:9999/badreq"))
+                        .uri("http://localhost:9999/login"))
                 .route("error", rs -> rs
                         .path("/error")
                         .filters(fs -> fs.retry(6))
-                        .uri("lb:/new"))
+                        .uri("lb:/login"))
                 .route("newTrip", routeSpec -> routeSpec
                                 .path("/new")
                                 .filters(fl -> fl
                                         .requestRateLimiter(rlc -> rlc.setRateLimiter(redisRateLimiter())
                                                 .setKeyResolver(exchange -> {
-//													return Mono.just("mycount");
                                                     return exchange.getPrincipal().map(principal -> principal.getName()).switchIfEmpty(Mono.empty());
                                                 }))
                                         .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default"))
@@ -111,10 +114,11 @@ public class TaxiAppApplication {
                                 gfs.setPath("lb:/getDriver/{id}"))
                         .uri("http://localhost:8080/"))
                 .route("insertToDB", routeSpec -> routeSpec
-                        .path("/insert")
+                        .path("/insertTrip")
                         .filters(gfs ->
-                                gfs.setPath("lb:/insert"))
-                        .uri("http://localhost:9393/"))
+                                gfs.setPath("lb:/insertTrip"))
+                        .uri("http://localhost:8080/"))
                 .build();
     }
+
 }

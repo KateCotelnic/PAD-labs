@@ -11,10 +11,13 @@ import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
+import javax.ws.rs.HeaderParam;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,8 +25,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 
 @RestController
-@RequiredArgsConstructor
 public class UserController {
+
+//    private final WebClient.Builder userBuilder;
+
+//    public UserController(WebClient.Builder userBuilder) {
+//        this.userBuilder = userBuilder;
+//    }
+
+    private Map<String,String> tokens = new HashMap<>();
 
     @Autowired
     private UserService userService;
@@ -50,6 +60,12 @@ public class UserController {
         return userService.addUser(userDTO);
     }
 
+    @PostMapping("/token")
+    void postToken(@HeaderParam("username")String username, @HeaderParam("token")String token){
+        System.out.println("username: " + username);
+        System.out.println("token: " + token);
+        tokens.put(username,token);
+    }
 //    @GetMapping(
 //            produces = MediaType.TEXT_EVENT_STREAM_VALUE,
 //            value = "/newTrip"
