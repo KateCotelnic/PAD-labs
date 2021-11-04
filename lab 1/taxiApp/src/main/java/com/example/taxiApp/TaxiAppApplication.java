@@ -48,14 +48,14 @@ public class TaxiAppApplication {
                 .build();
     }
 
-//    @Bean
-//    MapReactiveUserDetailsService authentication(){
-//        return new MapReactiveUserDetailsService(User.withDefaultPasswordEncoder()
-//                .username("kate")
-//                .password("kk")
-//                .roles("USER")
-//                .build());
-//    }
+    @Bean
+    MapReactiveUserDetailsService authentication(){
+        return new MapReactiveUserDetailsService(User.withDefaultPasswordEncoder()
+                .username("kate")
+                .password("kk")
+                .roles("USER")
+                .build());
+    }
 
     @Bean
     RouteLocator gateway(RouteLocatorBuilder rlb) {
