@@ -1,15 +1,13 @@
-package com.example.cache.cache;
+package com.example.newTripService.dto;
 
-import lombok.*;
-import org.springframework.boot.web.servlet.server.Session;
+import lombok.Builder;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
-@AllArgsConstructor
 @Builder
-public class RequestEntity {
-
+public class CashDTO {
     private String endpoint;
     private Object body;
     private Object response;

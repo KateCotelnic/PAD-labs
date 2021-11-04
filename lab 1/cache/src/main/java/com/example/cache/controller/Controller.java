@@ -10,10 +10,11 @@ import java.time.LocalDateTime;
 @RestController
 @AllArgsConstructor
 public class Controller {
-//    int i = 0;
+
     @PostMapping("/caching")
     void add(@RequestHeader("token")String token, @RequestBody RequestEntity requestEntity){
         requestEntity.setTime(LocalDateTime.now());
-        CashMap.cache.put(i++, requestEntity);
+        CashMap.cache.put(token, requestEntity);
+        System.out.println(CashMap.cache);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.newTripService.controller;
 
+import com.example.newTripService.dto.CashDTO;
 import com.example.newTripService.dto.UserDTO;
 import com.example.newTripService.dto.UserRequestDTO;
 import com.example.newTripService.entity.User;
@@ -8,12 +9,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
@@ -63,6 +63,17 @@ public class UserController {
 //        System.out.println("username: " + username);
 //        System.out.println("token: " + token);
         if(tokens.containsKey(username) && tokens.get(username).equals(token)) {
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("token", token);
+            CashDTO cashDTO = CashDTO.builder()
+                    .endpoint("http://localhost:9999/new")
+                    .body(userDTO)
+                    .response(new ResponseEntity<>(userService.addUser(userDTO), HttpStatus.OK))
+                    .build();
+            HttpEntity<CashDTO> request = new HttpEntity<>(cashDTO, headers);
+            String url = "http://localhost:9393/caching";
+            restTemplate.postForEntity(url, request, Void.class);
             return new ResponseEntity<>(userService.addUser(userDTO), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
