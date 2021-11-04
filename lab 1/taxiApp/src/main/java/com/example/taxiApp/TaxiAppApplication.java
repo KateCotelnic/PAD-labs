@@ -10,13 +10,14 @@ import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
 import org.springframework.cloud.gateway.filter.ratelimit.RedisRateLimiter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
+//import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.web.server.SecurityWebFilterChain;
+//import org.springframework.security.config.Customizer;
+//import org.springframework.security.config.web.server.ServerHttpSecurity;
+//import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
+//import org.springframework.security.core.userdetails.User;
+//import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -31,31 +32,31 @@ public class TaxiAppApplication {
         SpringApplication.run(TaxiAppApplication.class, args);
     }
 
-    @Bean
-    RedisRateLimiter redisRateLimiter() {
-        return new RedisRateLimiter(5, 10);
-    }
-
-    @Bean
-    SecurityWebFilterChain authorization(ServerHttpSecurity hhtp){
-        return hhtp
-                .httpBasic(Customizer.withDefaults())
-                .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .authorizeExchange(ae -> ae
-                        .pathMatchers("/new").authenticated()
-                        .anyExchange()
-                        .permitAll())
-                .build();
-    }
-
-    @Bean
-    MapReactiveUserDetailsService authentication(){
-        return new MapReactiveUserDetailsService(User.withDefaultPasswordEncoder()
-                .username("kate")
-                .password("kk")
-                .roles("USER")
-                .build());
-    }
+//    @Bean
+//    RedisRateLimiter redisRateLimiter() {
+//        return new RedisRateLimiter(5, 10);
+//    }
+//
+//    @Bean
+//    SecurityWebFilterChain authorization(ServerHttpSecurity hhtp){
+//        return hhtp
+//                .httpBasic(Customizer.withDefaults())
+//                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+//                .authorizeExchange(ae -> ae
+//                        .pathMatchers("/new").authenticated()
+//                        .anyExchange()
+//                        .permitAll())
+//                .build();
+//    }
+//
+//    @Bean
+//    MapReactiveUserDetailsService authentication(){
+//        return new MapReactiveUserDetailsService(User.withDefaultPasswordEncoder()
+//                .username("kate")
+//                .password("kk")
+//                .roles("USER")
+//                .build());
+//    }
 
     @Bean
     RouteLocator gateway(RouteLocatorBuilder rlb) {
@@ -63,7 +64,7 @@ public class TaxiAppApplication {
                 .routes()
                 .route(rs -> rs.path("/default")
                         .filters(f -> f.filters((exchange, chain) -> chain.filter(exchange)))
-                        .uri("http://localhost:9999/login"))
+                        .uri("https://spring.io/guides"))
                 .route("error", rs -> rs
                         .path("/error")
                         .filters(fs -> fs.retry(6))
@@ -71,10 +72,10 @@ public class TaxiAppApplication {
                 .route("newTrip", routeSpec -> routeSpec
                                 .path("/new")
                                 .filters(fl -> fl
-                                        .requestRateLimiter(rlc -> rlc.setRateLimiter(redisRateLimiter())
-                                                .setKeyResolver(exchange -> {
-                                                    return exchange.getPrincipal().map(principal -> principal.getName()).switchIfEmpty(Mono.empty());
-                                                }))
+//                                        .requestRateLimiter(rlc -> rlc.setRateLimiter(redisRateLimiter())
+//                                                .setKeyResolver(exchange -> {
+//                                                    return exchange.getPrincipal().map(principal -> principal.getName()).switchIfEmpty(Mono.empty());
+//                                                }))
                                         .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default"))
                                         .setPath("lb:/newTrip"))
                                 .uri("http://localhost:9191")

@@ -25,6 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 
 @RestController
+@RequiredArgsConstructor
 public class UserController {
 
 //    private final WebClient.Builder userBuilder;
@@ -40,32 +41,34 @@ public class UserController {
 
 //        private final Flux <User> userFlux;
 
-    private final Map<Long, AtomicInteger> countPerSecond = new ConcurrentHashMap<>();
+//    private final Map<Long, AtomicInteger> countPerSecond = new ConcurrentHashMap<>();
 
     @PostMapping(
             produces = MediaType.TEXT_EVENT_STREAM_VALUE,
             value = "/newTrip"
     )
     UserDTO post(@ModelAttribute UserDTO userDTO){
-        var now = System.currentTimeMillis();
-        var second = (now / 1000);
-        var countForTheCurrentSecond = this.countPerSecond.compute(second, (aLong, atomicInteger) -> {
-            if (atomicInteger == null) {
-                atomicInteger = new AtomicInteger(0);
-            }
-            atomicInteger.incrementAndGet();
-            return atomicInteger;
-        });
-        System.out.println("There have been "+ countForTheCurrentSecond.get() + " requests for the second " + second);
+//        var now = System.currentTimeMillis();
+//        var second = (now / 1000);
+//        var countForTheCurrentSecond = this.countPerSecond.compute(second, (aLong, atomicInteger) -> {
+//            if (atomicInteger == null) {
+//                atomicInteger = new AtomicInteger(0);
+//            }
+//            atomicInteger.incrementAndGet();
+//            return atomicInteger;
+//        });
+//        System.out.println("There have been "+ countForTheCurrentSecond.get() + " requests for the second " + second);
         return userService.addUser(userDTO);
     }
 
     @PostMapping("/token")
-    void postToken(@HeaderParam("username")String username, @HeaderParam("token")String token){
+    void postToken(@RequestHeader("username")String username, @RequestHeader("token")String token){
         System.out.println("username: " + username);
         System.out.println("token: " + token);
         tokens.put(username,token);
+        System.out.println(tokens);
     }
+
 //    @GetMapping(
 //            produces = MediaType.TEXT_EVENT_STREAM_VALUE,
 //            value = "/newTrip"

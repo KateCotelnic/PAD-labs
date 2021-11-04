@@ -5,7 +5,6 @@ import com.example.taxiApp.model.User;
 import com.example.taxiApp.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +18,7 @@ import java.io.IOException;
 public class AuthenticationController {
     private UserService userService;
     @PostMapping()
-    public ResponseEntity<?> authenticate(@RequestBody User request) throws AuthenticationException, IOException {
+    public ResponseEntity<?> authenticate(@RequestBody User request){
         System.out.println(request.getUsername());
         return ResponseEntity.ok(ResponseData.builder().username(request.getUsername()).token(userService.getToken(request)).build());
     }
