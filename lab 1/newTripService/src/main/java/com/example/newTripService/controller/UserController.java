@@ -1,13 +1,16 @@
 package com.example.newTripService.controller;
 
 import com.example.newTripService.dto.UserDTO;
+import com.example.newTripService.dto.UserRequestDTO;
 import com.example.newTripService.entity.User;
 import com.example.newTripService.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +28,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 
 @RestController
-@RequiredArgsConstructor
 public class UserController {
 
 //    private final WebClient.Builder userBuilder;
@@ -47,7 +49,7 @@ public class UserController {
             produces = MediaType.TEXT_EVENT_STREAM_VALUE,
             value = "/newTrip"
     )
-    UserDTO post(@ModelAttribute UserDTO userDTO){
+    ResponseEntity<UserDTO> post(@RequestHeader("username") String username, @RequestHeader("token") String token, @ModelAttribute UserDTO userDTO){
 //        var now = System.currentTimeMillis();
 //        var second = (now / 1000);
 //        var countForTheCurrentSecond = this.countPerSecond.compute(second, (aLong, atomicInteger) -> {
@@ -58,14 +60,19 @@ public class UserController {
 //            return atomicInteger;
 //        });
 //        System.out.println("There have been "+ countForTheCurrentSecond.get() + " requests for the second " + second);
-        return userService.addUser(userDTO);
+//        System.out.println("username: " + username);
+//        System.out.println("token: " + token);
+        if(tokens.containsKey(username) && tokens.get(username).equals(token)) {
+            return new ResponseEntity<>(userService.addUser(userDTO), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/token")
-    void postToken(@RequestHeader("username")String username, @RequestHeader("token")String token){
-        System.out.println("username: " + username);
-        System.out.println("token: " + token);
-        tokens.put(username,token);
+    void postToken(@RequestBody UserRequestDTO requestDTO){
+//        System.out.println("username: " + requestDTO.getUsername());
+//        System.out.println("token: " + requestDTO.getToken());
+        tokens.put(requestDTO.getUsername(), requestDTO.getToken());
         System.out.println(tokens);
     }
 

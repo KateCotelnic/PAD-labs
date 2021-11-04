@@ -10,7 +10,6 @@ import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
 import org.springframework.cloud.gateway.filter.ratelimit.RedisRateLimiter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
-//import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 //import org.springframework.security.config.Customizer;
@@ -64,7 +63,7 @@ public class TaxiAppApplication {
                 .routes()
                 .route(rs -> rs.path("/default")
                         .filters(f -> f.filters((exchange, chain) -> chain.filter(exchange)))
-                        .uri("https://spring.io/guides"))
+                        .uri("http://localhost:9999/login"))
                 .route("error", rs -> rs
                         .path("/error")
                         .filters(fs -> fs.retry(6))

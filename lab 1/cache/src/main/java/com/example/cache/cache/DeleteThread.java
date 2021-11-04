@@ -10,11 +10,11 @@ public class DeleteThread extends Thread{
     @SneakyThrows
     @Override
     public void run() {
-        for (Map.Entry<Session, RequestEntity> entry : CashMap.cache.entrySet()){
-            Session session = entry.getKey();
+        for (Map.Entry<String, RequestEntity> entry : CashMap.cache.entrySet()){
+            String token = entry.getKey();
             RequestEntity request = entry.getValue();
             if(request.getTime().plusHours(3).isAfter(LocalDateTime.now())){
-                CashMap.cache.remove(session);
+                CashMap.cache.remove(token);
             }
         }
         sleep(60000);

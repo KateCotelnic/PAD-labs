@@ -5,5 +5,5 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CashMap {
-    public static Map<Session, RequestEntity> cache = new ConcurrentHashMap<>();
+    public static Map<String, RequestEntity> cache = new ConcurrentHashMap<>();
 }

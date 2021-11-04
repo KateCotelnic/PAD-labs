@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 public class RequestEntity {
 
     private String endpoint;
-    private String token;
     private Object body;
     private Object response;
     private LocalDateTime time;

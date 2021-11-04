@@ -1,19 +1,16 @@
 package com.example.taxiApp.service;
 
 import com.example.taxiApp.model.*;
-//import io.jsonwebtoken.JwtBuilder;
-//import io.jsonwebtoken.Jwts;
-//import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.netty.handler.codec.http.HttpRequest;
 import lombok.AllArgsConstructor;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.security.core.GrantedAuthority;
 //import org.springframework.security.core.authority.AuthorityUtils;
@@ -23,7 +20,6 @@ import reactor.netty.http.client.HttpClient;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
-//import javax.xml.bind.Datatyp.eConverter;
 import java.io.IOException;
 import java.security.Key;
 import java.sql.Driver;
@@ -57,7 +53,7 @@ public class UserService {
             }
         }
         if(!token.isEmpty()){
-            sendToken(token);
+            sendToken(user.getUsername(), token);
         }
         return token;
     }
@@ -84,13 +80,16 @@ public class UserService {
         return builder.compact();
     }
 
-    private void sendToken(String token){
+    private void sendToken(String username, String token){
         RestTemplate restTemplate = new RestTemplate();
-        Map<String, String> map = new HashMap<>();
-        map.put("username", token);
-        map.put("token", token);
+//        Map<String, String> map = new HashMap<>();
+//        map.put("username", username);
+//        map.put("token", token);
+        System.out.println("username: " + username);
+        System.out.println("token: " + token);
+        HttpEntity<UserDTO> request = new HttpEntity<>(new UserDTO(username, token));
         String url = "http://localhost:9191/token";
-        restTemplate.postForEntity(url, map, Void.class);
+        restTemplate.postForEntity(url, request, Void.class);
 //        url = "http://localhost:9292/token";
 //        restTemplate.postForEntity(url, map, Void.class);
     }

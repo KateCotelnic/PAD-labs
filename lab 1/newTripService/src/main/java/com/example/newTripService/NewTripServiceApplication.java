@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @SpringBootApplication
-//@EnableEurekaClient
+@EnableEurekaClient
 //@EnableResourceServer
 public class NewTripServiceApplication {
 
