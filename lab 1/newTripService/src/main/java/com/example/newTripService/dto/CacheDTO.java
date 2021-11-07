@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class CashDTO {
+public class CacheDTO {
     private String endpoint;
     private Object body;
     private Object response;

@@ -1,25 +1,17 @@
 package com.example.taxiApp;
 
-import org.apache.http.impl.BHttpConnectionBase;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.cloud.gateway.filter.GatewayFilter;
-import org.springframework.cloud.gateway.filter.GatewayFilterChain;
-import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
-import org.springframework.cloud.gateway.filter.ratelimit.RedisRateLimiter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
+
 //import org.springframework.security.config.Customizer;
 //import org.springframework.security.config.web.server.ServerHttpSecurity;
 //import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
 //import org.springframework.security.core.userdetails.User;
 //import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
 
 @SpringBootApplication
 //@EnableOAuth2Sso
@@ -70,7 +62,7 @@ public class TaxiAppApplication {
                         .filters(fs -> fs.retry(6))
                         .uri("lb:/login"))
                 .route("newTrip", routeSpec -> routeSpec
-                                .path("/newToService")
+                                .path("/new")
                                 .filters(fl -> fl
 //                                        .requestRateLimiter(rlc -> rlc.setRateLimiter(redisRateLimiter())
 //                                                .setKeyResolver(exchange -> {
@@ -78,15 +70,22 @@ public class TaxiAppApplication {
 //                                                }))
                                         .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default"))
                                         .setPath("lb:/newTrip"))
-                                .uri("http://localhost:9191")
+                                .uri("http://localhost:9393")
                 )
-                .route("newTripStatus", routeSpec -> routeSpec
-                                .path("/newStatus")
-                                .filters(fl -> fl
-                                        .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default"))
-                                        .setPath("lb:/newTripStatus"))
-                                .uri("http://localhost:9191")
-                )
+//                .route("newTripAll", routeSpec -> routeSpec
+//                                .path("/getAllFromNewTrip")
+//                                .filters(fl -> fl
+//                                        .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default"))
+//                                        .setPath("lb:/getAllFromNewTrip"))
+//                                .uri("http://localhost:9191")
+//                )
+//                .route("newTripStatus", routeSpec -> routeSpec
+//                                .path("/newStatus")
+//                                .filters(fl -> fl
+//                                        .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default"))
+//                                        .setPath("lb:/newTripStatus"))
+//                                .uri("http://localhost:9191")
+//                )
                 .route("trip", routeSpec -> routeSpec
                         .path("/trip")
                         .filters(gatewayFilterSpec ->

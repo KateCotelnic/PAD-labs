@@ -1,13 +1,11 @@
-package com.example.newTripService.dto;
+package com.example.taxiApp.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-@Builder
-public class UserDTO {
+public class UserRequestNewDTO {
     private String id;
     private String location;
     private String destination;

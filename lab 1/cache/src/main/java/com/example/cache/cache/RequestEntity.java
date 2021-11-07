@@ -1,7 +1,8 @@
 package com.example.cache.cache;
 
-import lombok.*;
-import org.springframework.boot.web.servlet.server.Session;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 

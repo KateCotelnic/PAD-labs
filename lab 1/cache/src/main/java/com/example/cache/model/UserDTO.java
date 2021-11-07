@@ -1,12 +1,10 @@
-package com.example.newTripService.dto;
+package com.example.cache.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
-@Builder
+//@AllArgsConstructor
+//@Builder
 public class UserDTO {
     private String id;
     private String location;
