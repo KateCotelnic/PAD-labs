@@ -1,21 +1,12 @@
 package com.example.newTripService.config;
 
-import com.example.newTripService.entity.User;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.var;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.reactive.socket.WebSocketHandler;
-import org.springframework.web.reactive.socket.WebSocketSession;
-import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
@@ -29,6 +20,17 @@ public class WebSocketConfiguration {
 //    private String from (User user){
 //        return this.objectMapper.writeValueAsString(user);
 //    }
+
+    @Bean
+    public RestTemplate getRestTemplate()
+    {
+        HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+        httpRequestFactory.setConnectionRequestTimeout(1);
+        httpRequestFactory.setConnectTimeout(1);
+        httpRequestFactory.setReadTimeout(1);
+
+        return new RestTemplate(httpRequestFactory);
+    }
 
     @Bean
     WebSocketHandler webSocketHandler(){

@@ -1,5 +1,6 @@
 package com.example.newTripService.controller;
 
+import com.example.newTripService.config.WebSocketConfiguration;
 import com.example.newTripService.dto.CacheDTO;
 import com.example.newTripService.dto.UserDTO;
 import com.example.newTripService.dto.UserRequestDTO;
@@ -34,6 +35,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    WebSocketConfiguration configuration;
 
 //        private final Flux <User> userFlux;
 
@@ -74,7 +78,8 @@ public class UserController {
 //        System.out.println("username: " + username);
 //        System.out.println("token: " + token);
         if(tokens.containsKey(username) && tokens.get(username).equals(token)) {
-            RestTemplate restTemplate = new RestTemplate();
+            RestTemplate restTemplate = configuration.getRestTemplate();
+//            setTimeout(restTemplate, 1);
             HttpHeaders headers = new HttpHeaders();
             headers.set("token", token);
             System.out.println(userDTO);

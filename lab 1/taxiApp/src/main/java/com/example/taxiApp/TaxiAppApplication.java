@@ -58,9 +58,9 @@ public class TaxiAppApplication {
                         .filters(f -> f.filters((exchange, chain) -> chain.filter(exchange)))
                         .uri("http://localhost:9999/login"))
                 .route("error", rs -> rs
-                        .path("/error")
+                        .path("/login")
                         .filters(fs -> fs.retry(6))
-                        .uri("lb:/login"))
+                        .uri("lb:/error"))
                 .route("newTrip", routeSpec -> routeSpec
                                 .path("/new")
                                 .filters(fl -> fl
@@ -72,20 +72,20 @@ public class TaxiAppApplication {
                                         .setPath("lb:/newTrip"))
                                 .uri("http://localhost:9393")
                 )
-//                .route("newTripAll", routeSpec -> routeSpec
-//                                .path("/getAllFromNewTrip")
-//                                .filters(fl -> fl
-//                                        .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default"))
-//                                        .setPath("lb:/getAllFromNewTrip"))
-//                                .uri("http://localhost:9191")
-//                )
-//                .route("newTripStatus", routeSpec -> routeSpec
-//                                .path("/newStatus")
-//                                .filters(fl -> fl
-//                                        .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default"))
-//                                        .setPath("lb:/newTripStatus"))
-//                                .uri("http://localhost:9191")
-//                )
+                .route("newTripAll", routeSpec -> routeSpec
+                                .path("/getAllFromNewTrip")
+                                .filters(fl -> fl
+                                        .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default"))
+                                        .setPath("lb:/getAllFromNewTrip"))
+                                .uri("http://localhost:9191")
+                )
+                .route("newTripStatus", routeSpec -> routeSpec
+                                .path("/newStatus")
+                                .filters(fl -> fl
+                                        .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default"))
+                                        .setPath("lb:/newTripStatus"))
+                                .uri("http://localhost:9191")
+                )
                 .route("trip", routeSpec -> routeSpec
                         .path("/trip")
                         .filters(gatewayFilterSpec ->
