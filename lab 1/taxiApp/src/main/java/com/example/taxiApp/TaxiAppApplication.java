@@ -28,6 +28,7 @@ import reactor.core.publisher.Mono;
 public class TaxiAppApplication {
 
     public static void main(String[] args) {
+
         SpringApplication.run(TaxiAppApplication.class, args);
     }
 
@@ -69,7 +70,7 @@ public class TaxiAppApplication {
                         .filters(fs -> fs.retry(6))
                         .uri("lb:/login"))
                 .route("newTrip", routeSpec -> routeSpec
-                                .path("/new")
+                                .path("/newToService")
                                 .filters(fl -> fl
 //                                        .requestRateLimiter(rlc -> rlc.setRateLimiter(redisRateLimiter())
 //                                                .setKeyResolver(exchange -> {
@@ -77,6 +78,13 @@ public class TaxiAppApplication {
 //                                                }))
                                         .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default"))
                                         .setPath("lb:/newTrip"))
+                                .uri("http://localhost:9191")
+                )
+                .route("newTripStatus", routeSpec -> routeSpec
+                                .path("/newStatus")
+                                .filters(fl -> fl
+                                        .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default"))
+                                        .setPath("lb:/newTripStatus"))
                                 .uri("http://localhost:9191")
                 )
                 .route("trip", routeSpec -> routeSpec
