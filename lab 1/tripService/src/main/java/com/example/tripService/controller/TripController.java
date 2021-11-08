@@ -4,19 +4,30 @@ import com.example.tripService.dto.PaymentDTO;
 import com.example.tripService.dto.TripDTO;
 import com.example.tripService.entity.Trip;
 import com.example.tripService.service.TripService;
-import lombok.RequiredArgsConstructor;
+import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.context.annotation.Bean;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 public class TripController {
 
+    @Value("${server.port}")
+    private Long port;
+
     @Autowired
     private TripService tripService;
+
+        private final Map<Long, AtomicInteger> countPerSecond = new ConcurrentHashMap<>();
 
     private final WebClient.Builder builder;
 
@@ -25,12 +36,23 @@ public class TripController {
     }
 
     @PostMapping(
-            produces = MediaType.TEXT_EVENT_STREAM_VALUE,
+//            produces = MediaType.TEXT_EVENT_STREAM_VALUE,
             value = "/currentTrip"
     )
-    TripDTO post(@ModelAttribute TripDTO tripDTO) {
-        tripDTO.setTime(tripDTO.getLocation().length() + "");
+    TripDTO post(@RequestBody TripDTO tripDTO) {
+        var now = System.currentTimeMillis();
+        var second = (now / 1000);
+        var countForTheCurrentSecond = this.countPerSecond.compute(second, (aLong, atomicInteger) -> {
+            if (atomicInteger == null) {
+                atomicInteger = new AtomicInteger(0);
+            }
+            atomicInteger.incrementAndGet();
+            return atomicInteger;
+        });
+        System.out.println("There have been "+ countForTheCurrentSecond.get() + " requests for the second " + second);
         tripDTO.setCost(tripDTO.getDestination().length() + "");
+        tripDTO.setTime(tripDTO.getLocation().length() + "");
+        tripDTO.setPort(port);
         tripService.addTrip(tripDTO);
         return tripDTO;
     }
@@ -42,7 +64,7 @@ public class TripController {
     }
 
     @GetMapping(
-            produces = MediaType.TEXT_EVENT_STREAM_VALUE,
+//            produces = MediaType.TEXT_EVENT_STREAM_VALUE,
             value = "/myTrip/{id}"
     )
     TripDTO get(@PathVariable Long id) {
@@ -53,6 +75,9 @@ public class TripController {
         tripDTO.setLocation(trip.getLocation());
         tripDTO.setDriverId(trip.getDriverId().toString());
         tripDTO.setUserId(trip.getUserId().toString());
+        tripDTO.setCost(tripDTO.getDestination().length() + "");
+        tripDTO.setTime(tripDTO.getLocation().length() + "");
+        tripDTO.setPort(port);
         return tripDTO;
     }
 

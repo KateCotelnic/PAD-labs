@@ -1,8 +1,9 @@
-package com.example.tripService.dto;
+package com.example.taxiApp.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

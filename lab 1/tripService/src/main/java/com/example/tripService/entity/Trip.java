@@ -2,8 +2,12 @@ package com.example.tripService.entity;
 
 import com.example.tripService.entity.enums.PaymentType;
 import com.example.tripService.entity.enums.TripType;
-import lombok.*;
-import org.bouncycastle.asn1.cms.Time;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,6 +25,7 @@ public class Trip {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+//    @Column(unique = true)
     private Long userId;
     private Long driverId;
     private String location;

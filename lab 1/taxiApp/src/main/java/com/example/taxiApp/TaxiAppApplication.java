@@ -2,10 +2,17 @@ package com.example.taxiApp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.gateway.filter.ratelimit.RedisRateLimiter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.web.server.SecurityWebFilterChain;
+import reactor.core.publisher.Mono;
 
 //import org.springframework.security.config.Customizer;
 //import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -24,31 +31,32 @@ public class TaxiAppApplication {
         SpringApplication.run(TaxiAppApplication.class, args);
     }
 
-//    @Bean
-//    RedisRateLimiter redisRateLimiter() {
-//        return new RedisRateLimiter(5, 10);
-//    }
-//
-//    @Bean
-//    SecurityWebFilterChain authorization(ServerHttpSecurity hhtp){
-//        return hhtp
-//                .httpBasic(Customizer.withDefaults())
-//                .csrf(ServerHttpSecurity.CsrfSpec::disable)
-//                .authorizeExchange(ae -> ae
-//                        .pathMatchers("/new").authenticated()
-//                        .anyExchange()
-//                        .permitAll())
-//                .build();
-//    }
-//
-//    @Bean
-//    MapReactiveUserDetailsService authentication(){
-//        return new MapReactiveUserDetailsService(User.withDefaultPasswordEncoder()
-//                .username("kate")
-//                .password("kk")
-//                .roles("USER")
-//                .build());
-//    }
+    @Bean
+    RedisRateLimiter redisRateLimiter() {
+        return new RedisRateLimiter(1, 5);
+    }
+
+    @Bean
+    SecurityWebFilterChain authorization(ServerHttpSecurity hhtp){
+        return hhtp
+                .httpBasic(Customizer.withDefaults())
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .authorizeExchange(ae -> ae
+                        .pathMatchers("/trip").authenticated()
+//                        .pathMatchers("/myTrip/{id}").authenticated()
+                        .anyExchange()
+                        .permitAll())
+                .build();
+    }
+
+    @Bean
+    MapReactiveUserDetailsService authentication(){
+        return new MapReactiveUserDetailsService(User.withDefaultPasswordEncoder()
+                .username("gateway")
+                .password("taxi")
+                .roles("USER")
+                .build());
+    }
 
     @Bean
     RouteLocator gateway(RouteLocatorBuilder rlb) {
@@ -64,10 +72,6 @@ public class TaxiAppApplication {
                 .route("newTrip", routeSpec -> routeSpec
                                 .path("/new")
                                 .filters(fl -> fl
-//                                        .requestRateLimiter(rlc -> rlc.setRateLimiter(redisRateLimiter())
-//                                                .setKeyResolver(exchange -> {
-//                                                    return exchange.getPrincipal().map(principal -> principal.getName()).switchIfEmpty(Mono.empty());
-//                                                }))
                                         .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default"))
                                         .setPath("lb:/newTrip"))
                                 .uri("http://localhost:9393")
@@ -88,16 +92,22 @@ public class TaxiAppApplication {
                 )
                 .route("trip", routeSpec -> routeSpec
                         .path("/trip")
-                        .filters(gatewayFilterSpec ->
-                                gatewayFilterSpec.setPath("lb:/currentTrip")
-                                        .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default")))
-                        .uri("http://localhost:9292/"))
+                        .filters(fs -> fs
+                                .requestRateLimiter(rlc -> rlc.setRateLimiter(redisRateLimiter())
+                                                .setKeyResolver(exchange -> {
+                                                    return exchange.getPrincipal().map(principal -> principal.getName()).switchIfEmpty(Mono.empty());
+                                                }))
+                                .setPath("lb:/currentTrip")
+                                .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default")))
+                        .uri("http://localhost:9292"))
+
                 .route("myTrip", routeSpec -> routeSpec
                         .path("/myTrip/{id}")
                         .filters(gatewayFilterSpec ->
                                 gatewayFilterSpec.setPath("lb:/myTrip/{id}")
                                         .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default")))
-                        .uri("http://localhost:9292/"))
+                        .uri("http://TRIP-SERVICE"))
+
                 .route("payment", routeSpec -> routeSpec
                         .path("/payment")
                         .filters(gatewayFilterSpec ->
@@ -110,22 +120,19 @@ public class TaxiAppApplication {
                                 gfs.setPath("lb:/finishTrip")
                                         .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default")))
                         .uri("http://localhost:9292/"))
-                .route("getPassenger", routeSpec -> routeSpec
-                        .path("/getPassenger/{id}")
+                .route("allDrivers", routeSpec -> routeSpec
+                        .path("/allDrivers")
                         .filters(gfs ->
-                                gfs.setPath("lb:/getPassenger/{id}"))
-                        .uri("http://localhost:8080/"))
-                .route("getDriver", routeSpec -> routeSpec
-                        .path("/getDriver/{id}")
-                        .filters(gfs ->
-                                gfs.setPath("lb:/getDriver/{id}"))
-                        .uri("http://localhost:8080/"))
-                .route("insertToDB", routeSpec -> routeSpec
-                        .path("/insertTrip")
-                        .filters(gfs ->
-                                gfs.setPath("lb:/insertTrip"))
-                        .uri("http://localhost:8080/"))
+                                gfs.setPath("lb:/get/getDrivers")
+                                        .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default")))
+                        .uri("http://localhost:3000"))
                 .build();
     }
+
+//    @Bean
+//    @LoadBalanced
+//    RestTemplate getRestTemplate(){
+//        return new RestTemplate();
+//    }
 
 }
