@@ -14,12 +14,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import reactor.core.publisher.Mono;
 
-//import org.springframework.security.config.Customizer;
-//import org.springframework.security.config.web.server.ServerHttpSecurity;
-//import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
-//import org.springframework.security.core.userdetails.User;
-//import org.springframework.security.web.server.SecurityWebFilterChain;
-
 @SpringBootApplication
 //@EnableOAuth2Sso
 //@EnableZuulProxy
@@ -37,20 +31,19 @@ public class TaxiAppApplication {
     }
 
     @Bean
-    SecurityWebFilterChain authorization(ServerHttpSecurity hhtp){
+    SecurityWebFilterChain authorization(ServerHttpSecurity hhtp) {
         return hhtp
                 .httpBasic(Customizer.withDefaults())
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(ae -> ae
                         .pathMatchers("/trip").authenticated()
-//                        .pathMatchers("/myTrip/{id}").authenticated()
                         .anyExchange()
                         .permitAll())
                 .build();
     }
 
     @Bean
-    MapReactiveUserDetailsService authentication(){
+    MapReactiveUserDetailsService authentication() {
         return new MapReactiveUserDetailsService(User.withDefaultPasswordEncoder()
                 .username("gateway")
                 .password("taxi")
@@ -70,33 +63,33 @@ public class TaxiAppApplication {
                         .filters(fs -> fs.retry(6))
                         .uri("lb:/error"))
                 .route("newTrip", routeSpec -> routeSpec
-                                .path("/new")
-                                .filters(fl -> fl
-                                        .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default"))
-                                        .setPath("lb:/newTrip"))
-                                .uri("http://localhost:9393")
+                        .path("/new")
+                        .filters(fl -> fl
+                                .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default"))
+                                .setPath("lb:/newTrip"))
+                        .uri("http://localhost:9393")
                 )
                 .route("newTripAll", routeSpec -> routeSpec
-                                .path("/getAllFromNewTrip")
-                                .filters(fl -> fl
-                                        .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default"))
-                                        .setPath("lb:/getAllFromNewTrip"))
-                                .uri("http://localhost:9191")
+                        .path("/getAllFromNewTrip")
+                        .filters(fl -> fl
+                                .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default"))
+                                .setPath("lb:/getAllFromNewTrip"))
+                        .uri("http://localhost:9191")
                 )
                 .route("newTripStatus", routeSpec -> routeSpec
-                                .path("/newStatus")
-                                .filters(fl -> fl
-                                        .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default"))
-                                        .setPath("lb:/newTripStatus"))
-                                .uri("http://localhost:9191")
+                        .path("/newStatus")
+                        .filters(fl -> fl
+                                .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default"))
+                                .setPath("lb:/newTripStatus"))
+                        .uri("http://localhost:9191")
                 )
                 .route("trip", routeSpec -> routeSpec
                         .path("/trip")
                         .filters(fs -> fs
                                 .requestRateLimiter(rlc -> rlc.setRateLimiter(redisRateLimiter())
-                                                .setKeyResolver(exchange -> {
-                                                    return exchange.getPrincipal().map(principal -> principal.getName()).switchIfEmpty(Mono.empty());
-                                                }))
+                                        .setKeyResolver(exchange -> {
+                                            return exchange.getPrincipal().map(principal -> principal.getName()).switchIfEmpty(Mono.empty());
+                                        }))
                                 .setPath("lb:/currentTrip")
                                 .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default")))
                         .uri("http://localhost:9292"))
@@ -123,7 +116,7 @@ public class TaxiAppApplication {
                 .route("allDrivers", routeSpec -> routeSpec
                         .path("/allDrivers")
                         .filters(gfs ->
-                                gfs.setPath("lb:/get/getDrivers")
+                                gfs.setPath("lb:/get/getDriver")
                                         .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default")))
                         .uri("http://localhost:3000"))
                 .build();

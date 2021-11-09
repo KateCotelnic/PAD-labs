@@ -15,9 +15,9 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
 
-    public UserDTO addUser(UserDTO userDTO){
+    public UserDTO addUser(UserDTO userDTO) {
         User user;
-        if(userDTO.getUserType()=="PASSENGER") {
+        if (userDTO.getUserType() == "PASSENGER") {
             user = User.builder()
                     .id(Long.parseLong(userDTO.getId()))
                     .tripType(TripType.valueOf(userDTO.getTripType()))
@@ -36,12 +36,12 @@ public class UserService {
         return userDTO;
     }
 
-    public List<User> getAll(){
-        return  userRepository.findAll();
+    public List<User> getAll() {
+        return userRepository.findAll();
     }
 
 
-    public User getAnyUser(){
+    public User getAnyUser() {
         return userRepository.getUserByUserType(UserType.PASSENGER);
     }
 }

@@ -15,12 +15,12 @@ import java.util.List;
 public class InsertEntitiesService {
     private final TripRepository tripRepository;
 
-    public void insertEntities(){
+    public void insertEntities() {
         saveTrips();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void saveTrips(){
+    void saveTrips() {
         List<Trip> trips = Factory.tripFactory();
 
         tripRepository.saveAll(trips);

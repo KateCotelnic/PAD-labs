@@ -30,17 +30,12 @@ public class Controller {
         System.out.println(CashMap.cache);
     }
 
-    //  @PostMapping("/getResponse")
     Object getResponse(String token, UserDTO requestEntity) {
-//        System.out.println("request: " + requestEntity);
         System.out.println("map : " + CashMap.cache);
-//        System.out.println("token: " + token);
         if (!CashMap.cache.containsKey(token)) {
             System.out.println("doesn't contain key");
-//            System.out.println(new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED));
             return null;
         }
-//        UserDTO userDTO = (UserDTO) requestEntity;
         System.out.println("contains key");
         RequestEntity request = CashMap.cache.get(token);
         String tmp = requestEntity.toString().substring(8);
@@ -55,25 +50,13 @@ public class Controller {
     }
 
     @PostMapping(
-//            produces = MediaType.APPLICATION_JSON_VALUE,
-//            produces = MediaType.TEXT_EVENT_STREAM_VALUE,
             value = "/newTrip")
     public ResponseEntity<Object> newTrip(@RequestHeader("username") String username, @RequestHeader("token") String token, @ModelAttribute UserDTO userDTO) {
-//        System.out.println("username: " + username);
-//        System.out.println("token: " + token);
-//        System.out.println("request: " + userDTO);
-//        headers.set("token", token);
-//        headers.set("username", username);
-//        HttpEntity<Object> request = new HttpEntity<>(userRequestNewDTO, headers);
-//        String url = "http://localhost:9393/getResponse";
         Object response = getResponse(token, userDTO);
-//        response = restTemplate.postForEntity(url, request, Object.class);
-//        System.out.println(response);
         if (response != null) {
             System.out.println("Got response from cache");
             return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
-//        System.out.println("here");
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
             headers.set("username", username);
@@ -81,8 +64,6 @@ public class Controller {
             String url = "http://localhost:9191/newTrip";
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
             ResponseEntity<Object> responseFromService = restTemplate.postForEntity(url, request, Object.class);
-//                .exchange(url, HttpMethod.POST, request, Void.class);
-//        System.out.println("response: " + responseFromService);
             Object respons = responseFromService.getBody();
             System.out.println("Got response from service");
             return new ResponseEntity<>(respons, HttpStatus.OK);

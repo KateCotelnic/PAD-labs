@@ -14,13 +14,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class WebSocketConfiguration {
 
-//    private final ObjectMapper objectMapper;
-//
-//    @SneakyThrows
-//    private String from (User user){
-//        return this.objectMapper.writeValueAsString(user);
-//    }
-
     @Bean
     public RestTemplate getRestTemplate()
     {

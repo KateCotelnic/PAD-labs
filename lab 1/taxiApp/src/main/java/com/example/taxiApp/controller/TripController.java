@@ -9,16 +9,13 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 public class TripController {
 
-//    @Autowired
-//    private RestTemplate restTemplate;
-
     int i = 0;
 
     @GetMapping("/myTrip/{id}")
-    public TripDTO getMyTrip(@PathVariable Long id){
+    public TripDTO getMyTrip(@PathVariable Long id) {
         RestTemplate restTemplate = new RestTemplate();
         i++;
-        if(i%2==0)
+        if (i % 2 == 0)
             return restTemplate.getForObject("http://localhost:9292/myTrip/" + id, TripDTO.class);
         else
             return restTemplate.getForObject("http://localhost:9293/myTrip/" + id, TripDTO.class);

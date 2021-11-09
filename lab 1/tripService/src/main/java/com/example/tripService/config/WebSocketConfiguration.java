@@ -1,16 +1,10 @@
 package com.example.tripService.config;
 
-import com.example.tripService.controller.TripController;
-import com.example.tripService.entity.Trip;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.var;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.reactive.socket.WebSocketHandler;
-import reactor.core.publisher.Flux;
 
 import java.util.Map;
 
@@ -18,17 +12,14 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class WebSocketConfiguration {
     @Bean
-    WebSocketHandler webSocketHandler(){
-        return  webSocketSession -> {
-//                var map = userFlux
-//                        .map(user -> from(user))
-//                        .map(webSocketSession::textMessage);
+    WebSocketHandler webSocketHandler() {
+        return webSocketSession -> {
             return webSocketSession.receive().then();
         };
     }
 
     @Bean
-    SimpleUrlHandlerMapping simpleUrlHandlerMapping(WebSocketHandler webSocketHandler){
+    SimpleUrlHandlerMapping simpleUrlHandlerMapping(WebSocketHandler webSocketHandler) {
         return new SimpleUrlHandlerMapping(Map.of("/currentTrip", webSocketHandler), 10);
     }
 

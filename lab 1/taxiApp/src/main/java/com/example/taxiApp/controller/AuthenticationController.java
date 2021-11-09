@@ -10,15 +10,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-
 @RestController
 @RequestMapping("/login")
 @AllArgsConstructor
 public class AuthenticationController {
     private UserService userService;
+
     @PostMapping()
-    public ResponseEntity<?> authenticate(@RequestBody User request){
+    public ResponseEntity<?> authenticate(@RequestBody User request) {
         System.out.println(request.getUsername());
         return ResponseEntity.ok(ResponseData.builder().username(request.getUsername()).token(userService.getToken(request)).build());
     }

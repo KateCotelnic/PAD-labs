@@ -27,7 +27,7 @@ public class TripController {
     @Autowired
     private TripService tripService;
 
-        private final Map<Long, AtomicInteger> countPerSecond = new ConcurrentHashMap<>();
+    private final Map<Long, AtomicInteger> countPerSecond = new ConcurrentHashMap<>();
 
     private final WebClient.Builder builder;
 
@@ -36,7 +36,6 @@ public class TripController {
     }
 
     @PostMapping(
-//            produces = MediaType.TEXT_EVENT_STREAM_VALUE,
             value = "/currentTrip"
     )
     TripDTO post(@RequestBody TripDTO tripDTO) {
@@ -49,7 +48,7 @@ public class TripController {
             atomicInteger.incrementAndGet();
             return atomicInteger;
         });
-        System.out.println("There have been "+ countForTheCurrentSecond.get() + " requests for the second " + second);
+        System.out.println("There have been " + countForTheCurrentSecond.get() + " requests for the second " + second);
         tripDTO.setCost(tripDTO.getDestination().length() + "");
         tripDTO.setTime(tripDTO.getLocation().length() + "");
         tripDTO.setPort(port);
@@ -64,7 +63,6 @@ public class TripController {
     }
 
     @GetMapping(
-//            produces = MediaType.TEXT_EVENT_STREAM_VALUE,
             value = "/myTrip/{id}"
     )
     TripDTO get(@PathVariable Long id) {

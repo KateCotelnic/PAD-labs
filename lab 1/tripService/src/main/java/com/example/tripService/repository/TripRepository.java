@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface TripRepository extends JpaRepository<Trip, Long> {
 
-//    @Query(nativeQuery = true, value = "select t.* from Trip t where t.userId = :id limit 1")
     Trip getTripByUserId(Long id);
 
     @Transactional

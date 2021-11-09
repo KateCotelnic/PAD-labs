@@ -25,13 +25,7 @@ import java.util.Map;
 @RestController
 public class UserController {
 
-//    private final WebClient.Builder userBuilder;
-
-//    public UserController(WebClient.Builder userBuilder) {
-//        this.userBuilder = userBuilder;
-//    }
-
-    private Map<String,String> tokens = new HashMap<>();
+    private Map<String, String> tokens = new HashMap<>();
 
     @Autowired
     private UserService userService;
@@ -39,47 +33,13 @@ public class UserController {
     @Autowired
     WebSocketConfiguration configuration;
 
-//        private final Flux <User> userFlux;
-
-//    private final Map<Long, AtomicInteger> countPerSecond = new ConcurrentHashMap<>();
-
     @PostMapping(
-//            produces = MediaType.TEXT_EVENT_STREAM_VALUE,
             value = "/newTrip"
     )
-    UserDTO post(@RequestHeader("username") String username, @RequestHeader("token") String token, @RequestBody UserDTO userDTO){
-//        RestTemplate restTemplate = new RestTemplate();
-//        HttpHeaders headers = new HttpHeaders();
-//        System.out.println("username: " + username);
-//        System.out.println("token: " + token);
-//        System.out.println("request: " + userDTO);
-//        headers.set("token", token);
-//        HttpEntity<Object> request = new HttpEntity<>(userRequestNewDTO, headers);
-//        String url = "http://localhost:9393/getResponse";
-//        ResponseEntity<Object> response;
-//        try {
-//            response = restTemplate.postForEntity(url, request, Object.class);
-//            System.out.println(response);
-//            System.out.println("status: " + response.getStatusCode());
-//            if (response.getStatusCode() == HttpStatus.OK) {
-//                System.out.println("Got response from cache");
-//                return response;
-//            }
-//        var now = System.currentTimeMillis();
-//        var second = (now / 1000);
-//        var countForTheCurrentSecond = this.countPerSecond.compute(second, (aLong, atomicInteger) -> {
-//            if (atomicInteger == null) {
-//                atomicInteger = new AtomicInteger(0);
-//            }
-//            atomicInteger.incrementAndGet();
-//            return atomicInteger;
-//        });
-//        System.out.println("There have been "+ countForTheCurrentSecond.get() + " requests for the second " + second);
-//        System.out.println("username: " + username);
-//        System.out.println("token: " + token);
-        if(tokens.containsKey(username) && tokens.get(username).equals(token)) {
+    UserDTO post(@RequestHeader("username") String username, @RequestHeader("token") String token, @RequestBody UserDTO userDTO) {
+        ;
+        if (tokens.containsKey(username) && tokens.get(username).equals(token)) {
             RestTemplate restTemplate = configuration.getRestTemplate();
-//            setTimeout(restTemplate, 1);
             HttpHeaders headers = new HttpHeaders();
             headers.set("token", token);
             System.out.println(userDTO);
@@ -106,32 +66,13 @@ public class UserController {
     }
 
     @PostMapping("/token")
-    void postToken(@RequestBody UserRequestDTO requestDTO){
-//        System.out.println("username: " + requestDTO.getUsername());
-//        System.out.println("token: " + requestDTO.getToken());
+    void postToken(@RequestBody UserRequestDTO requestDTO) {
         tokens.put(requestDTO.getUsername(), requestDTO.getToken());
         System.out.println(tokens);
     }
 
     @GetMapping("/getAllFromNewTrip")
-    List<User> getAll(){
+    List<User> getAll() {
         return userService.getAll();
     }
-
-//    @GetMapping(
-//            produces = MediaType.TEXT_EVENT_STREAM_VALUE,
-//            value = "/newTrip"
-//    )
-//    Flux <User> get(){
-//        return this.userFlux;
-//    }
-//    @RequestMapping(value = "/newTrip", method = RequestMethod.POST)
-//    public String newUser(@ModelAttribute("userUpdateDTO") UserDTO userDTO) {
-//        userService.addUser(userDTO);
-//        return "user added";
-//    }
-//    @RequestMapping(value = "/newTrip", method = RequestMethod.GET)
-//    public User getUser() {
-//        return userService.getUser();
-//    }
 }
