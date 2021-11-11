@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TripDTO {
+public class TripRequestDTO {
     private String userId;
     private String driverId;
     private String location;

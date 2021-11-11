@@ -38,7 +38,7 @@ public class TripController {
     @PostMapping(
             value = "/currentTrip"
     )
-    TripDTO post(@RequestBody TripDTO tripDTO) {
+    TripDTO post(TripDTO tripDTO) {
         var now = System.currentTimeMillis();
         var second = (now / 1000);
         var countForTheCurrentSecond = this.countPerSecond.compute(second, (aLong, atomicInteger) -> {

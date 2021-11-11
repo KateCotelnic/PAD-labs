@@ -37,7 +37,6 @@ public class UserController {
             value = "/newTrip"
     )
     UserDTO post(@RequestHeader("username") String username, @RequestHeader("token") String token, @RequestBody UserDTO userDTO) {
-        ;
         if (tokens.containsKey(username) && tokens.get(username).equals(token)) {
             RestTemplate restTemplate = configuration.getRestTemplate();
             HttpHeaders headers = new HttpHeaders();

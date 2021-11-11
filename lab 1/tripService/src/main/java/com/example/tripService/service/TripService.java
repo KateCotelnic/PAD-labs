@@ -16,7 +16,7 @@ public class TripService {
     @Autowired
     private final TripRepository tripRepository;
 
-    public void addTrip(TripDTO tripDTO) {
+    public Trip addTrip(TripDTO tripDTO) {
         Trip trip = Trip.builder()
                 .userId(Long.parseLong(tripDTO.getUserId()))
                 .tripType(TripType.valueOf(tripDTO.getTripType()))
@@ -27,6 +27,7 @@ public class TripService {
                 .cost(Double.parseDouble(tripDTO.getCost()))
                 .build();
         tripRepository.save(trip);
+        return trip;
     }
 
     public void addPaymentType(PaymentDTO paymentDTO) {
