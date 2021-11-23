@@ -21,28 +21,28 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Controller {
 
-    private
-
     @PostMapping("/caching")
     void add(@RequestHeader("token") String token, @RequestBody RequestEntity requestEntity) {
         requestEntity.setTime(LocalDateTime.now());
         CashMap.cache.put(token, requestEntity);
-        System.out.println(CashMap.cache);
+        System.out.println("Cache: " + CashMap.cache);
     }
 
     Object getResponse(String token, UserDTO requestEntity) {
-        System.out.println("map : " + CashMap.cache);
+//        System.out.println("token = " + token);
+//        System.out.println("request = " + requestEntity);
+//        System.out.println("map : " + CashMap.cache);
         if (!CashMap.cache.containsKey(token)) {
-            System.out.println("doesn't contain key");
+//            System.out.println("doesn't contain key");
             return null;
         }
-        System.out.println("contains key");
+//        System.out.println("contains key");
         RequestEntity request = CashMap.cache.get(token);
         String tmp = requestEntity.toString().substring(8);
         String req = "{" + tmp.substring(0, tmp.length() - 1) + "}";
         String ch = request.getBody().toString();
-        System.out.println("request: " + req);
-        System.out.println("in cache: " + ch);
+//        System.out.println("request: " + req);
+//        System.out.println("in cache: " + ch);
         if (req.equals(ch)) {
             return request.getResponse();
         }
@@ -57,17 +57,31 @@ public class Controller {
             System.out.println("Got response from cache");
             return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
-            RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
             headers.set("username", username);
             headers.set("token", token);
-            String url = "http://localhost:9191/newTrip";
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
-            ResponseEntity<Object> responseFromService = restTemplate.postForEntity(url, request, Object.class);
-            Object respons = responseFromService.getBody();
+            Object respons = getFromService(request, 9191);
             System.out.println("Got response from service");
-            Thread.sleep(5000);
+            if(respons == null) {
+                System.out.println("no response from 9191");
+//                    respons = getFromService(request, 9192);
+//                    System.out.println(respons);
+            }
             return new ResponseEntity<>(respons, HttpStatus.OK);
+//                return new ResponseEntity<>(HttpStatus.GATEWAY_TIMEOUT);
+//            Thread.sleep(5000);
+        }
+    }
+
+    private Object getFromService(HttpEntity<UserDTO> request, long port){
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:" + port + "/newTrip";
+        try {
+            ResponseEntity<Object> responseFromService = restTemplate.postForEntity(url, request, Object.class);
+            return responseFromService.getBody();
+        }catch (Exception e){
+            return null;
         }
     }
 }

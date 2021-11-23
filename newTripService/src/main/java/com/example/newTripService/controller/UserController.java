@@ -41,7 +41,7 @@ public class UserController {
             RestTemplate restTemplate = configuration.getRestTemplate();
             HttpHeaders headers = new HttpHeaders();
             headers.set("token", token);
-            System.out.println(userDTO);
+//            System.out.println(userDTO);
             UserDTO userDTOSend = UserDTO.builder()
                     .id(userDTO.getId())
                     .destination(userDTO.getDestination())
@@ -60,9 +60,11 @@ public class UserController {
             try {
                 restTemplate.postForEntity(url, request, Void.class);
             } catch (Exception e){
+//                System.out.println(e.getMessage());
                 System.out.println("Not insert in cache");
             }
-            System.out.println(request);
+//            System.out.println(request);
+//            System.out.println("user response: " + user);
             return user;
         }
         return null;
@@ -71,7 +73,7 @@ public class UserController {
     @PostMapping("/token")
     void postToken(@RequestBody UserRequestDTO requestDTO) {
         tokens.put(requestDTO.getUsername(), requestDTO.getToken());
-        System.out.println(tokens);
+//        System.out.println(tokens);
     }
 
     @GetMapping("/getAllFromNewTrip")

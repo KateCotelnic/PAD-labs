@@ -17,7 +17,15 @@ public class UserService {
 
     public UserDTO addUser(UserDTO userDTO) {
         User user;
-        if (userDTO.getUserType() == "PASSENGER") {
+        user = User.builder()
+                .location("driver loc")
+                .id(10L)
+                .build();
+        userRepository.save(user);
+//        System.out.println(userDTO);
+//        System.out.println(userDTO.getUserType());
+        if (userDTO.getUserType().equals("PASSENGER")) {
+//            System.out.println("pas");
             user = User.builder()
                     .id(Long.parseLong(userDTO.getId()))
                     .tripType(TripType.valueOf(userDTO.getTripType()))
@@ -25,6 +33,9 @@ public class UserService {
                     .location(userDTO.getLocation())
                     .destination(userDTO.getDestination())
                     .build();
+            user.setDriverId(10L);
+            System.out.println();
+//            System.out.println(user);
         } else {
             user = User.builder()
                     .id(Long.parseLong(userDTO.getId()))

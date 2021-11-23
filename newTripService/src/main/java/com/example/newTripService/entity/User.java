@@ -13,6 +13,7 @@ import javax.persistence.Id;
 @ToString
 @Getter
 @Builder
+@Setter
 public class User{
     @Id
     private Long id;
