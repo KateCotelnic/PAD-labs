@@ -74,7 +74,17 @@ public class UserService {
         System.out.println("username: " + username);
         System.out.println("token: " + token);
         HttpEntity<UserDTO> request = new HttpEntity<>(new UserDTO(username, token));
-        String url = "http://localhost:9191/token";
-        restTemplate.postForEntity(url, request, Void.class);
+        try {
+            String url = "http://localhost:9191/token";
+            restTemplate.postForEntity(url, request, Void.class);
+        } catch (Exception e){
+            System.out.println("not sent token to 9191");
+        } try {
+            String url = "http://localhost:9192/token";
+            restTemplate.postForEntity(url, request, Void.class);
+        } catch (Exception e){
+            System.out.println("not sent token to 9192");
+        }
+
     }
 }

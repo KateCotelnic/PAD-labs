@@ -61,12 +61,13 @@ public class UserController {
                 restTemplate.postForEntity(url, request, Void.class);
             } catch (Exception e){
 //                System.out.println(e.getMessage());
-                System.out.println("Not insert in cache");
+//                System.out.println("Not insert in cache");
             }
 //            System.out.println(request);
-//            System.out.println("user response: " + user);
+            System.out.println("user response: " + user);
             return user;
         }
+        System.out.println("return null");
         return null;
     }
 

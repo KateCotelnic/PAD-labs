@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @RestController
 @AllArgsConstructor
@@ -51,7 +52,7 @@ public class Controller {
 
     @PostMapping(
             value = "/newTrip")
-    public ResponseEntity<Object> newTrip(@RequestHeader("username") String username, @RequestHeader("token") String token, @ModelAttribute UserDTO userDTO) throws InterruptedException {
+    public Object newTrip(@RequestHeader("username") String username, @RequestHeader("token") String token, @ModelAttribute UserDTO userDTO) throws InterruptedException {
         Object response = getResponse(token, userDTO);
         if (response != null) {
             System.out.println("Got response from cache");
@@ -61,14 +62,21 @@ public class Controller {
             headers.set("username", username);
             headers.set("token", token);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
-            Object respons = getFromService(request, 9191);
-            System.out.println("Got response from service");
-            if(respons == null) {
-                System.out.println("no response from 9191");
+            try {
+                Object respons = getFromService(request, 9191);
+                System.out.println("Got response from service");
+                if(Objects.isNull(respons)){
+                    System.out.println("no response from 9191");
+                    System.out.println("Got response from service");
                     respons = getFromService(request, 9192);
-                    System.out.println(respons);
+                    return new ResponseEntity<>(respons, HttpStatus.OK);
+                }
+                return new ResponseEntity<>(respons, HttpStatus.OK);
+            } catch (Exception e) {
+                System.out.println("no response from 9191");
+                System.out.println("Got response from service");
+                return getFromService(request, 9192);
             }
-            return new ResponseEntity<>(respons, HttpStatus.OK);
 //                return new ResponseEntity<>(HttpStatus.GATEWAY_TIMEOUT);
 //            Thread.sleep(5000);
         }
