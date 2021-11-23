@@ -22,6 +22,9 @@ import java.util.Objects;
 @AllArgsConstructor
 public class Controller {
 
+    private static int maxTries = 10;
+    private int i = 0;
+
     @PostMapping("/caching")
     void add(@RequestHeader("token") String token, @RequestBody RequestEntity requestEntity) {
         requestEntity.setTime(LocalDateTime.now());
@@ -52,7 +55,10 @@ public class Controller {
 
     @PostMapping(
             value = "/newTrip")
-    public Object newTrip(@RequestHeader("username") String username, @RequestHeader("token") String token, @ModelAttribute UserDTO userDTO) throws InterruptedException {
+    public Object newTrip(@RequestHeader("username") String username, @RequestHeader("token") String token, @RequestBody UserDTO userDTO) throws InterruptedException {
+        System.out.println("username = " + username);
+        System.out.println("token = " + token);
+        System.out.println(userDTO);
         Object response = getResponse(token, userDTO);
         if (response != null) {
             System.out.println("Got response from cache");
@@ -62,24 +68,39 @@ public class Controller {
             headers.set("username", username);
             headers.set("token", token);
             HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
-            try {
-                Object respons = getFromService(request, 9191);
-                System.out.println("Got response from service");
-                if(Objects.isNull(respons)){
-                    System.out.println("no response from 9191");
-                    System.out.println("Got response from service");
-                    respons = getFromService(request, 9192);
-                    return new ResponseEntity<>(respons, HttpStatus.OK);
-                }
-                return new ResponseEntity<>(respons, HttpStatus.OK);
-            } catch (Exception e) {
-                System.out.println("no response from 9191");
-                System.out.println("Got response from service");
-                return getFromService(request, 9192);
-            }
-//                return new ResponseEntity<>(HttpStatus.GATEWAY_TIMEOUT);
+                return getResponse(request);
 //            Thread.sleep(5000);
         }
+    }
+
+    private Object getResponse(HttpEntity<UserDTO> request){
+        Object response;
+        while (true){
+//            i++;
+           response = getFromService(request, 9191);
+            if(Objects.isNull(response)){
+                response = getFromService(request, 9192);
+                if(Objects.isNull(response)){
+                    response = getFromService(request, 9193);
+                    if(Objects.isNull(response)){
+                        continue;
+                    }
+                    else {
+                        System.out.println("Got response from service 9193");
+                        return new ResponseEntity<>(response, HttpStatus.OK);
+                    }
+                }
+                else {
+                    System.out.println("Got response from service 9292");
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
+            }
+            else {
+                System.out.println("Got response from service 9191");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+        }
+//        return new ResponseEntity<>("Service new trip is not available. Try later", HttpStatus.GATEWAY_TIMEOUT);
     }
 
     private Object getFromService(HttpEntity<UserDTO> request, long port){

@@ -74,7 +74,7 @@ public class UserController {
     @PostMapping("/token")
     void postToken(@RequestBody UserRequestDTO requestDTO) {
         tokens.put(requestDTO.getUsername(), requestDTO.getToken());
-//        System.out.println(tokens);
+        System.out.println(tokens);
     }
 
     @GetMapping("/getAllFromNewTrip")

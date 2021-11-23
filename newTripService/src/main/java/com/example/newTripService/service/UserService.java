@@ -35,7 +35,7 @@ public class UserService {
                     .build();
             user.setDriverId(10L);
             System.out.println();
-//            System.out.println(user);
+            System.out.println(user);
         } else {
             user = User.builder()
                     .id(Long.parseLong(userDTO.getId()))

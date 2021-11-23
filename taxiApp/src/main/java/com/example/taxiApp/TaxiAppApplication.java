@@ -62,14 +62,14 @@ public class TaxiAppApplication {
                         .path("/login")
                         .filters(fs -> fs.retry(6))
                         .uri("lb:/error"))
-                .route("newTrip", routeSpec -> routeSpec
-                        .path("/new")
-                        .filters(fl -> fl
-                                .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default"))
-//                                .filters(fs -> fs.retry(6))
-                                .setPath("lb:/newTrip"))
-                        .uri("http://localhost:9393")
-                )
+//                .route("newTrip", routeSpec -> routeSpec
+//                        .path("/new")
+//                        .filters(fl -> fl
+//                                .circuitBreaker(cbc -> cbc.setFallbackUri("forward:/default"))
+////                                .filters(fs -> fs.retry(6))
+//                                .setPath("lb:/newTrip"))
+//                        .uri("http://localhost:9393")
+//                )
                 .route("newTripAll", routeSpec -> routeSpec
                         .path("/getAllFromNewTrip")
                         .filters(fl -> fl
