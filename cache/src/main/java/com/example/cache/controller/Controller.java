@@ -65,8 +65,8 @@ public class Controller {
             System.out.println("Got response from service");
             if(respons == null) {
                 System.out.println("no response from 9191");
-//                    respons = getFromService(request, 9192);
-//                    System.out.println(respons);
+                    respons = getFromService(request, 9192);
+                    System.out.println(respons);
             }
             return new ResponseEntity<>(respons, HttpStatus.OK);
 //                return new ResponseEntity<>(HttpStatus.GATEWAY_TIMEOUT);
