@@ -60,8 +60,11 @@ public class UserController {
             try {
                 restTemplate.postForEntity(url, request, Void.class);
             } catch (Exception e){
-//                System.out.println(e.getMessage());
-//                System.out.println("Not insert in cache");
+            }
+            url = "http://localhost:9394/caching";
+            try {
+                restTemplate.postForEntity(url, request, Void.class);
+            } catch (Exception e){
             }
 //            System.out.println(request);
             System.out.println("user response: " + user);
@@ -74,7 +77,7 @@ public class UserController {
     @PostMapping("/token")
     void postToken(@RequestBody UserRequestDTO requestDTO) {
         tokens.put(requestDTO.getUsername(), requestDTO.getToken());
-        System.out.println(tokens);
+//        System.out.println(tokens);
     }
 
     @GetMapping("/getAllFromNewTrip")

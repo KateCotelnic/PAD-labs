@@ -78,19 +78,19 @@ public class UserService {
             String url = "http://localhost:9191/token";
             restTemplate.postForEntity(url, request, Void.class);
         } catch (Exception e){
-            System.out.println("did not send token to 9191");
+//            System.out.println("did not send token to 9191");
         }
         try {
             String url = "http://localhost:9192/token";
             restTemplate.postForEntity(url, request, Void.class);
         } catch (Exception e){
-            System.out.println("did not send token to 9192");
+//            System.out.println("did not send token to 9192");
         }
         try {
             String url = "http://localhost:9193/token";
             restTemplate.postForEntity(url, request, Void.class);
         } catch (Exception e){
-            System.out.println("did not send token to 9193");
+//            System.out.println("did not send token to 9193");
         }
 
     }
