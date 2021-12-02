@@ -35,8 +35,8 @@ public class WebSocketConfiguration {
             };
         }
 
-        @Bean
-    SimpleUrlHandlerMapping simpleUrlHandlerMapping(WebSocketHandler webSocketHandler){
-        return new SimpleUrlHandlerMapping(Map.of("/newTrip", webSocketHandler), 10);
-        }
+//        @Bean
+//    SimpleUrlHandlerMapping simpleUrlHandlerMapping(WebSocketHandler webSocketHandler){
+//        return new SimpleUrlHandlerMapping(Map.of("/newTrip", webSocketHandler), 10);
+//        }
     }

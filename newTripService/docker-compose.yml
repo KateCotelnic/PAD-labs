@@ -1,0 +1,107 @@
+version: '2'
+
+services:
+  gateway:
+    image: 'gateway:latest'
+    ports:
+      - 9999:9999
+    build:
+      context: ../taxiApp/
+    container_name: gateway
+    depends_on:
+      - discovery-service
+    environment:
+      - SPRING_APPLICATION_NAME=gateway
+      - SERVER_PORT=9999
+  cache1:
+    image: 'cache:latest'
+    ports:
+        - 9393:9393
+    build:
+      context: ../cache/
+    container_name: cache1
+    depends_on:
+      - discovery-service
+    environment:
+       - SPRING_APPLICATION_NAME=cache1
+       - SERVER_PORT=9393
+  cache2:
+    image: 'cache:latest'
+    ports:
+      - 9394:9394
+    build:
+      context: ../cache/
+    container_name: cache2
+    depends_on:
+      - discovery-service
+    environment:
+      - SPRING_APPLICATION_NAME=cache2
+      - SERVER_PORT=9394
+  app1:
+    image: 'newtrip:latest'
+    ports:
+      - 9191:9191
+    build:
+      context: .
+    container_name: newtrip1
+    depends_on:
+      - db
+      - discovery-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_APPLICATION_NAME=newtrip1
+      - SERVER_PORT=9191
+  app2:
+    image: 'newtrip:latest'
+    ports:
+      - 9192:9192
+    build:
+      context: .
+    container_name: newtrip2
+    depends_on:
+      - db
+      - discovery-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_APPLICATION_NAME=newtrip2
+      - SERVER_PORT=9192
+  node:
+    restart: always
+    build:
+      context: ../mongo/
+    ports:
+      - 8080:8080
+    volumes:
+      - ./:/code
+  mongo:
+      image: mongo
+      ports:
+        - 27017:27017
+      volumes:
+        - mongodb:/data/mydb
+
+  discovery-service:
+    image: 'discovery-service:latest'
+    ports:
+      - 8761:8761
+    build:
+      context: ../registry/
+    container_name: discovery-service
+  db:
+    image: 'postgres:13.4-alpine'
+    ports:
+      - 5432:5432
+    container_name: db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DATABSE=new_trip
+
+volumes:
+  mongodb:

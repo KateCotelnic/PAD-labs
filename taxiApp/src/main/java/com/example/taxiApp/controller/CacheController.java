@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @RestController
@@ -61,11 +62,15 @@ public class CacheController {
         }
     }
 
+
     private Object getResponse(HttpEntity<UserRequestNewDTO> request){
         Object response;
-        int i = 0;
-        while (i < 3){
-            i++;
+//        int i = 0;
+        LocalDateTime start = LocalDateTime.now();
+        while (true){
+            if(LocalDateTime.now().isAfter(start.plusSeconds(CircuitBreaker.timeoutSeconds))){
+                return new ResponseEntity<>("Gateway timeout! Service 'new trip' is not available.", HttpStatus.GATEWAY_TIMEOUT);
+            }
             response = getFromService(request, 9191);
             if(Objects.isNull(response)){
                 response = getFromService(request, 9192);
@@ -89,7 +94,7 @@ public class CacheController {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
         }
-        return new ResponseEntity<>(HttpStatus.GATEWAY_TIMEOUT);
+//        return new ResponseEntity<>(HttpStatus.GATEWAY_TIMEOUT);
     }
 
     private Object getFromService(HttpEntity<UserRequestNewDTO> request, long port){
