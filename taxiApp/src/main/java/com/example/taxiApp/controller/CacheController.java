@@ -26,7 +26,7 @@ public class CacheController {
         headers.set("token", token);
         headers.set("username", username);
         HttpEntity<Object> request = new HttpEntity<>(userRequestNewDTO, headers);
-        String url = "http://localhost:9393/newTrip";
+        String url = "http://cache1:9393/newTrip";
         try {
             ResponseEntity<Object> response = restTemplate.postForEntity(url, request, Object.class);
             if(response.getBody() == null){
@@ -47,7 +47,7 @@ public class CacheController {
     }
 
     private Object secondStep(HttpEntity<Object> request, UserRequestNewDTO userRequestNewDTO, HttpHeaders headers){
-        String url = "http://localhost:9394/newTrip";
+        String url = "http://cache2:9394/newTrip";
         try {
             ResponseEntity<Object> response = restTemplate.postForEntity(url, request, Object.class);
             if(response.getBody() == null){
@@ -71,11 +71,11 @@ public class CacheController {
             if(LocalDateTime.now().isAfter(start.plusSeconds(CircuitBreaker.timeoutSeconds))){
                 return new ResponseEntity<>("Gateway timeout! Service 'new trip' is not available.", HttpStatus.GATEWAY_TIMEOUT);
             }
-            response = getFromService(request, 9191);
+            response = getFromService(request, 1, 9191);
             if(Objects.isNull(response)){
-                response = getFromService(request, 9192);
+                response = getFromService(request, 2, 9192);
                 if(Objects.isNull(response)){
-                    response = getFromService(request, 9193);
+                    response = getFromService(request, 3, 9193);
                     if(Objects.isNull(response)){
                         continue;
                     }
@@ -97,9 +97,9 @@ public class CacheController {
 //        return new ResponseEntity<>(HttpStatus.GATEWAY_TIMEOUT);
     }
 
-    private Object getFromService(HttpEntity<UserRequestNewDTO> request, long port){
+    private Object getFromService(HttpEntity<UserRequestNewDTO> request, int trip, long port){
         RestTemplate restTemplate = new RestTemplate();
-        String url = "http://localhost:" + port + "/newTrip";
+        String url = "http://newtrip" + trip + ":" + port + "/newTrip";
         try {
             ResponseEntity<Object> responseFromService = restTemplate.postForEntity(url, request, Object.class);
             return responseFromService.getBody();

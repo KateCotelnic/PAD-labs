@@ -62,54 +62,7 @@ public class Controller {
             return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
             return null;
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.set("username", username);
-//            headers.set("token", token);
-//            HttpEntity<UserDTO> request = new HttpEntity<>(userDTO, headers);
-//                return getResponse(request);
 //            Thread.sleep(5000);
         }
     }
-
-//    private Object getResponse(HttpEntity<UserDTO> request){
-//        Object response;
-//        int i = 0;
-//        while (i < 3){
-//            i++;
-//           response = getFromService(request, 9191);
-//            if(Objects.isNull(response)){
-//                response = getFromService(request, 9192);
-//                if(Objects.isNull(response)){
-//                    response = getFromService(request, 9193);
-//                    if(Objects.isNull(response)){
-//                        continue;
-//                    }
-//                    else {
-//                        System.out.println("Got response from service 9193");
-//                        return new ResponseEntity<>(response, HttpStatus.OK);
-//                    }
-//                }
-//                else {
-//                    System.out.println("Got response from service 9292");
-//                    return new ResponseEntity<>(response, HttpStatus.OK);
-//                }
-//            }
-//            else {
-//                System.out.println("Got response from service 9191");
-//                return new ResponseEntity<>(response, HttpStatus.OK);
-//            }
-//        }
-//        return new ResponseEntity<>(HttpStatus.GATEWAY_TIMEOUT);
-//    }
-//
-//    private Object getFromService(HttpEntity<UserDTO> request, long port){
-//        RestTemplate restTemplate = new RestTemplate();
-//        String url = "http://localhost:" + port + "/newTrip";
-//        try {
-//            ResponseEntity<Object> responseFromService = restTemplate.postForEntity(url, request, Object.class);
-//            return responseFromService.getBody();
-//        }catch (Exception e){
-//            return null;
-//        }
-//    }
 }

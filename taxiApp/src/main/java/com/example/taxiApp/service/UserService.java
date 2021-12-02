@@ -27,14 +27,14 @@ public class UserService {
     public String getToken(User user) {
         RestTemplate restTemplate = new RestTemplate();
         if (UserType.valueOf(user.getUserType()) == UserType.PASSENGER) {
-            String url = "http://localhost:8080//getPas/";
+            String url = "http://test:8080//getPas/";
             ResponseEntity<PassengerDTO> response = restTemplate.getForEntity(url + user.getUsername(), PassengerDTO.class);
             PassengerDTO passengerDTO = response.getBody();
             if (user.getPassword().equals(passengerDTO.getPassword())) {
                 token = createJWT(user.getUsername());
             }
         } else {
-            String url = "http://localhost:8080//getDriver/";
+            String url = "http://test:8080//getDriver/";
             ResponseEntity<DriverDTO> response = restTemplate.getForEntity(url + user.getUsername(), DriverDTO.class);
             DriverDTO driverDTO = response.getBody();
             if (user.getPassword().equals(driverDTO.getPassword())) {
@@ -75,19 +75,19 @@ public class UserService {
         System.out.println("token: " + token);
         HttpEntity<UserDTO> request = new HttpEntity<>(new UserDTO(username, token));
         try {
-            String url = "http://localhost:9191/token";
+            String url = "http://newtrip1:9191/token";
             restTemplate.postForEntity(url, request, Void.class);
         } catch (Exception e){
 //            System.out.println("did not send token to 9191");
         }
         try {
-            String url = "http://localhost:9192/token";
+            String url = "http://newtrip2:9192/token";
             restTemplate.postForEntity(url, request, Void.class);
         } catch (Exception e){
 //            System.out.println("did not send token to 9192");
         }
         try {
-            String url = "http://localhost:9193/token";
+            String url = "http://newtrip3:9193/token";
             restTemplate.postForEntity(url, request, Void.class);
         } catch (Exception e){
 //            System.out.println("did not send token to 9193");

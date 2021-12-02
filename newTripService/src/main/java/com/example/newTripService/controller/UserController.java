@@ -56,12 +56,12 @@ public class UserController {
                     .response(new ResponseEntity<>(user, HttpStatus.OK))
                     .build();
             HttpEntity<CacheDTO> request = new HttpEntity<>(cacheDTO, headers);
-            String url = "http://localhost:9393/caching";
+            String url = "http://cache1:9393/caching";
             try {
                 restTemplate.postForEntity(url, request, Void.class);
             } catch (Exception e){
             }
-            url = "http://localhost:9394/caching";
+            url = "http://cache2:9394/caching";
             try {
                 restTemplate.postForEntity(url, request, Void.class);
             } catch (Exception e){

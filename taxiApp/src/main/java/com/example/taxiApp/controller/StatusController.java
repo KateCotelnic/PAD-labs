@@ -25,7 +25,7 @@ public class StatusController {
     @GetMapping("/new")
     public ResponseEntity<Status> getStatusNew() {
         RestTemplate restTemplate = new RestTemplate();
-        String url = "http://localhost:9191/status";
+        String url = "http://newtrip1:9191/status";
         ResponseEntity<Status> response;
         try {
             response = restTemplate.getForEntity(url, Status.class);

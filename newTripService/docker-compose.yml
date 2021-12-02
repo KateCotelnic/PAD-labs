@@ -71,8 +71,27 @@ services:
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_APPLICATION_NAME=newtrip2
       - SERVER_PORT=9192
+  app3:
+    image: 'newtrip:latest'
+    ports:
+      - 9193:9193
+    build:
+      context: .
+    container_name: newtrip3
+    depends_on:
+      - db
+      - discovery-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_APPLICATION_NAME=newtrip3
+      - SERVER_PORT=9193
+
   node:
     restart: always
+    container_name: node
     build:
       context: ../mongo/
     ports:
