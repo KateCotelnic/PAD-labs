@@ -27,14 +27,14 @@ public class UserService {
     public String getToken(User user) {
         RestTemplate restTemplate = new RestTemplate();
         if (UserType.valueOf(user.getUserType()) == UserType.PASSENGER) {
-            String url = "http://test:8080//getPas/";
+            String url = "http://node:8080//getPas/";
             ResponseEntity<PassengerDTO> response = restTemplate.getForEntity(url + user.getUsername(), PassengerDTO.class);
             PassengerDTO passengerDTO = response.getBody();
             if (user.getPassword().equals(passengerDTO.getPassword())) {
                 token = createJWT(user.getUsername());
             }
         } else {
-            String url = "http://test:8080//getDriver/";
+            String url = "http://node:8080//getDriver/";
             ResponseEntity<DriverDTO> response = restTemplate.getForEntity(url + user.getUsername(), DriverDTO.class);
             DriverDTO driverDTO = response.getBody();
             if (user.getPassword().equals(driverDTO.getPassword())) {

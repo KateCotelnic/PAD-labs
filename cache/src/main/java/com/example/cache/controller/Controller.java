@@ -4,6 +4,7 @@ import com.example.cache.cache.CashMap;
 import com.example.cache.cache.RequestEntity;
 import com.example.cache.model.UserDTO;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import java.util.Objects;
 
 @RestController
 @AllArgsConstructor
+@Slf4j
 public class Controller {
 
     @PostMapping("/caching")
@@ -58,7 +60,7 @@ public class Controller {
         System.out.println(userDTO);
         Object response = getResponse(token, userDTO);
         if (response != null) {
-            System.out.println("Got response from cache");
+            log.info("Got response from cache");
             return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
             return null;

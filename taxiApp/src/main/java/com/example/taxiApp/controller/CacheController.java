@@ -2,6 +2,7 @@ package com.example.taxiApp.controller;
 
 import com.example.taxiApp.model.UserDTO;
 import com.example.taxiApp.model.UserRequestNewDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @RestController
+@Slf4j
 public class CacheController {
 
     RestTemplate restTemplate = new RestTemplate();
@@ -32,18 +34,11 @@ public class CacheController {
             if(response.getBody() == null){
                return secondStep(request, userRequestNewDTO, headers);
             }
-            System.out.println("got response from cache 1");
+            log.info("got response from cache 1");
             return response.getBody();
         } catch (Exception e){
           return secondStep(request, userRequestNewDTO, headers);
         }
-//            if(response.getStatusCode()==HttpStatus.GATEWAY_TIMEOUT){
-//                return new ResponseEntity<>("Service new trip is not available. Try later", HttpStatus.GATEWAY_TIMEOUT);
-//            }
-//            return response.getBody();
-//        } catch (Exception e){
-//            return new ResponseEntity<>("Service new trip is not available. Try later", HttpStatus.GATEWAY_TIMEOUT);
-//        }
     }
 
     private Object secondStep(HttpEntity<Object> request, UserRequestNewDTO userRequestNewDTO, HttpHeaders headers){
@@ -54,7 +49,7 @@ public class CacheController {
                 HttpEntity<UserRequestNewDTO> requestNewDTOHttpEntity = new HttpEntity<>(userRequestNewDTO, headers);
                 return getResponse(requestNewDTOHttpEntity);
             }
-            System.out.println("got response from cache 2");
+            log.info("got response from cache 2");
             return response.getBody();
         } catch (Exception e){
             HttpEntity<UserRequestNewDTO> requestNewDTOHttpEntity = new HttpEntity<>(userRequestNewDTO, headers);
@@ -65,7 +60,6 @@ public class CacheController {
 
     private Object getResponse(HttpEntity<UserRequestNewDTO> request){
         Object response;
-//        int i = 0;
         LocalDateTime start = LocalDateTime.now();
         while (true){
             if(LocalDateTime.now().isAfter(start.plusSeconds(CircuitBreaker.timeoutSeconds))){
@@ -80,17 +74,17 @@ public class CacheController {
                         continue;
                     }
                     else {
-                        System.out.println("Got response from service 9193");
+                        log.info("Got response from service 9193");
                         return new ResponseEntity<>(response, HttpStatus.OK);
                     }
                 }
                 else {
-                    System.out.println("Got response from service 9292");
+                    log.info("Got response from service 9292");
                     return new ResponseEntity<>(response, HttpStatus.OK);
                 }
             }
             else {
-                System.out.println("Got response from service 9191");
+                log.info("Got response from service 9191");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
         }

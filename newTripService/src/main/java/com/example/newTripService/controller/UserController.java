@@ -4,6 +4,7 @@ import com.example.newTripService.config.WebSocketConfiguration;
 import com.example.newTripService.dto.CacheDTO;
 import com.example.newTripService.dto.UserDTO;
 import com.example.newTripService.dto.UserRequestDTO;
+import com.example.newTripService.dto.UserResponseDTO;
 import com.example.newTripService.entity.User;
 import com.example.newTripService.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class UserController {
     @PostMapping(
             value = "/newTrip"
     )
-    UserDTO post(@RequestHeader("username") String username, @RequestHeader("token") String token, @RequestBody UserDTO userDTO) {
+    ResponseEntity<UserResponseDTO> post(@RequestHeader("username") String username, @RequestHeader("token") String token, @RequestBody UserDTO userDTO) {
         if (tokens.containsKey(username) && tokens.get(username).equals(token)) {
             RestTemplate restTemplate = configuration.getRestTemplate();
             HttpHeaders headers = new HttpHeaders();
@@ -49,7 +50,8 @@ public class UserController {
                     .location(userDTO.getLocation())
                     .tripType(userDTO.getTripType())
                     .build();
-            UserDTO user = userService.addUser(userDTO);
+            ResponseEntity<UserResponseDTO> user = userService.addUser(username, userDTO);
+            if(user.getStatusCode()==HttpStatus.OK){
             CacheDTO cacheDTO = CacheDTO.builder()
                     .endpoint("http://localhost:9999/new")
                     .body(userDTOSend)
@@ -65,6 +67,7 @@ public class UserController {
             try {
                 restTemplate.postForEntity(url, request, Void.class);
             } catch (Exception e){
+            }
             }
 //            System.out.println(request);
             System.out.println("user response: " + user);
