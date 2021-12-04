@@ -31,6 +31,7 @@ public class CacheController {
         String url = "http://cache1:9393/newTrip";
         try {
             ResponseEntity<Object> response = restTemplate.postForEntity(url, request, Object.class);
+            System.out.println("response from cache 1: " + response);
             if(response.getBody() == null){
                return secondStep(request, userRequestNewDTO, headers);
             }
@@ -45,6 +46,7 @@ public class CacheController {
         String url = "http://cache2:9394/newTrip";
         try {
             ResponseEntity<Object> response = restTemplate.postForEntity(url, request, Object.class);
+            System.out.println("response from cache 2: " + response);
             if(response.getBody() == null){
                 HttpEntity<UserRequestNewDTO> requestNewDTOHttpEntity = new HttpEntity<>(userRequestNewDTO, headers);
                 return getResponse(requestNewDTOHttpEntity);

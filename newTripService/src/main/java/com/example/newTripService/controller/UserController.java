@@ -37,7 +37,7 @@ public class UserController {
     @PostMapping(
             value = "/newTrip"
     )
-    ResponseEntity<UserResponseDTO> post(@RequestHeader("username") String username, @RequestHeader("token") String token, @RequestBody UserDTO userDTO) {
+    UserDTO post(@RequestHeader("username") String username, @RequestHeader("token") String token, @RequestBody UserDTO userDTO) {
         if (tokens.containsKey(username) && tokens.get(username).equals(token)) {
             RestTemplate restTemplate = configuration.getRestTemplate();
             HttpHeaders headers = new HttpHeaders();
@@ -50,8 +50,8 @@ public class UserController {
                     .location(userDTO.getLocation())
                     .tripType(userDTO.getTripType())
                     .build();
-            ResponseEntity<UserResponseDTO> user = userService.addUser(username, userDTO);
-            if(user.getStatusCode()==HttpStatus.OK){
+            UserDTO user = userService.addUser(username, userDTO);
+//            if(user.getStatusCode()==HttpStatus.OK){
             CacheDTO cacheDTO = CacheDTO.builder()
                     .endpoint("http://localhost:9999/new")
                     .body(userDTOSend)
@@ -68,7 +68,7 @@ public class UserController {
                 restTemplate.postForEntity(url, request, Void.class);
             } catch (Exception e){
             }
-            }
+//            }
 //            System.out.println(request);
             System.out.println("user response: " + user);
             return user;

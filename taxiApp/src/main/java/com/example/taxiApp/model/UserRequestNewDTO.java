@@ -11,5 +11,5 @@ public class UserRequestNewDTO {
     private String destination;
     private String tripType;
     private String userType;
-    private String driverId;
+    private String driverUsername;
 }

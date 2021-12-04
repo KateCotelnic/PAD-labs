@@ -90,14 +90,25 @@ services:
       - SERVER_PORT=9193
 
   node:
-    restart: always
-    container_name: node
-    build:
-      context: ../mongo/
+    image: 'node:latest'
     ports:
       - 8080:8080
-    volumes:
-      - ./:/code
+    build:
+      context: ../../../test/
+    container_name: node
+    environment:
+      - SPRING_APPLICATION_NAME=node
+      - SERVER_PORT=8080
+
+#  node:
+#    restart: always
+#    container_name: node
+#    build:
+#      context: ../mongo/
+#    ports:
+#      - 8080:8080
+#    volumes:
+#      - ./:/code
   mongo:
       image: mongo
       ports:

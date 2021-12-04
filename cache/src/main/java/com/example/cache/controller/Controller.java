@@ -36,7 +36,7 @@ public class Controller {
 //        System.out.println("request = " + requestEntity);
 //        System.out.println("map : " + CashMap.cache);
         if (!CashMap.cache.containsKey(token)) {
-//            System.out.println("doesn't contain key");
+            System.out.println("doesn't contain key");
             return null;
         }
 //        System.out.println("contains key");
@@ -44,8 +44,8 @@ public class Controller {
         String tmp = requestEntity.toString().substring(8);
         String req = "{" + tmp.substring(0, tmp.length() - 1) + "}";
         String ch = request.getBody().toString();
-//        System.out.println("request: " + req);
-//        System.out.println("in cache: " + ch);
+        System.out.println("request: " + req);
+        System.out.println("in cache: " + ch);
         if (req.equals(ch)) {
             return request.getResponse();
         }
